@@ -1,0 +1,22 @@
+<dependencies>
+
+    <!-- Android maven dependencies -->
+    <androidPackages>
+        <repositories>
+            <repository>https://repo.maven.apache.org/maven2</repository>
+        </repositories>
+        <androidPackage spec="com.taptap.sdk:tap-core-unity:4.3.10"/>
+    </androidPackages>
+
+    <!-- iOS Cocoapod dependencies can be specified by each iosPod element. -->
+    <iosPods>
+        <sources>
+            <source>https://github.com/CocoaPods/Specs.git</source>
+        </sources>
+
+        <iosPod name="Protobuf" version="~> 3.0" bitcodeEnabled="false" addToAllTargets="false"/>
+        <iosPod name="TapTapCoreSDK" version="~> 4.3.10" bitcodeEnabled="false" addToAllTargets="false"/>
+
+    </iosPods>
+
+</dependencies>
