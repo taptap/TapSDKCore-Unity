@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://repo.maven.apache.org/maven2</repository>
+    </repositories>
+    <androidPackage spec="com.taptap.sdk:tap-core-unity:4.6.1-beta.6"/>
+  </androidPackages>
+  <iosPods>
+    <sources>
+      <source>https://github.com/CocoaPods/Specs.git</source>
+    </sources>
+    <iosPod name="TapTapCoreSDK" version="~> 4.5.2" bitcodeEnabled="false" addToAllTargets="false"/>
+  </iosPods>
+</dependencies>
