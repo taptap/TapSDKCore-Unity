@@ -3,9 +3,8 @@
   <androidPackages>
     <repositories>
       <repository>https://repo.maven.apache.org/maven2</repository>
-      <repository>https://nexus.xmxdev.com/repository/maven-public</repository>
     </repositories>
-    <androidPackage spec="com.taptap.sdk:tap-core-unity:4.6.1-alpha.13"/>
+    <androidPackage spec="com.taptap.sdk:tap-core-unity:4.6.2-beta.2"/>
   </androidPackages>
   <iosPods>
     <sources>
