@@ -17,6 +17,11 @@ namespace TapSDK.Core.Mobile
             EngineBridgeInitializer.Initialize();
         }
 
+        public void Init(TapTapEventOptions eventOptions)
+        {
+            
+        }
+
         public void SetUserID(string userID)
         {
             Debug.Log("TapEventMobile SetUserID = " + userID);

@@ -31,13 +31,13 @@ namespace TapSDK.Core.Standalone.Internal {
 
         internal void Show(TapSDKInitResult errorType)
         {
-            if (errorType == TapSDKInitResult.kTapSDKInitResult_NoPlatform){
+            if (errorType == TapSDKInitResult.NoPlatform){
                 tipText.text = "获取游戏信息失败，请下载 TapTap 客户端后重新启动游戏";
-            }else if (errorType == TapSDKInitResult.kTapSDKInitResult_NotLaunchedByPlatform){
+            }else if (errorType == TapSDKInitResult.NotLaunchedByPlatform){
                 tipText.text = "获取游戏信息失败，请从 TapTap 客户端重新启动游戏";
-            }else if (errorType == TapSDKInitResult.kTapSDKInitResult_Unknown){
+            }else if (errorType == TapSDKInitResult.Unknown){
                 tipText.text = "本地发生未知错误，请从 TapTap 客户端重新启动游戏";
-            }else if (errorType == TapSDKInitResult.kTapSDKInitResult_Timeout){
+            }else if (errorType == TapSDKInitResult.Timeout){
                 tipText.text = "获取游戏信息超时，请从 TapTap 客户端重新启动游戏";                  
             }else {
                 tipText.text = "发生未知错误，请从 TapTap 客户端重新启动游戏";

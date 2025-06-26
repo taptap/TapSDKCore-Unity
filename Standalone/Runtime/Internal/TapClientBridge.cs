@@ -14,29 +14,29 @@ namespace TapSDK.Core.Standalone.Internal
     internal enum TapSDKInitResult
     {
         // 初始化成功
-        kTapSDKInitResult_OK = 0,
+        OK = 0,
         // 其他错误
-        kTapSDKInitResult_FailedGeneric = 1,
+        FailedGeneric = 1,
         // 未找到 TapTap，用户可能未安装，请引导用户下载安装 TapTap
-        kTapSDKInitResult_NoPlatform = 2,
+        NoPlatform = 2,
         // 已安装 TapTap，游戏未通过 TapTap 启动
-        kTapSDKInitResult_NotLaunchedByPlatform = 3,
+        NotLaunchedByPlatform = 3,
 
         // SDK 本地执行时未知错误
-        kTapSDKInitResult_Unknown = -1,
+        Unknown = -1,
         // SDK 本地执行时超时
-        kTapSDKInitResult_Timeout = -2,
+        Timeout = -2,
     };
 
-    internal enum TapCallbackID
+    internal enum TapEventID
     {
-        kTapCallbackIDUnknown = 0,
+        Unknown = 0,
 
         // [1, 2000), reserved for TapTap platform events
-        kTapCallbackIDSystemStateChanged = 1,
+        SystemStateChanged = 1,
 
         // [2001, 4000), reserved for TapTap user events
-        kTapCallbackIDAuthorizeFinished = 2001,
+        AuthorizeFinished = 2001,
     };
 
     // 系统事件类型
@@ -49,9 +49,9 @@ namespace TapSDK.Core.Standalone.Internal
     // 是否触发授权的返回结果
     internal enum AuthorizeResult
     {
-        kAuthorizeResult_UNKNOWN = 0, // 未知
-        kAuthorizeResult_OK = 1, // 成功触发授权
-        kAuthorizeResult_FAILED = 2, // 授权失败
+        UNKNOWN = 0, // 未知
+        OK = 1, // 成功触发授权
+        FAILED = 2, // 授权失败
     };
 
     // 完成授权后的返回结果
@@ -152,39 +152,47 @@ namespace TapSDK.Core.Standalone.Internal
         SystemStateResponse response = Marshal.PtrToStructure<SystemStateResponse>(userData);
      }
     */
-    internal static void RegisterCallback(int callbackId, CallbackDelegate callback)
+    internal static void RegisterCallback(TapEventID eventID, CallbackDelegate callback)
     {
        
-        TapLogger.Debug("start set delegate");
         IntPtr funcPtr = Marshal.GetFunctionPointerForDelegate(callback);
-         if (callbackId == (int)TapCallbackID.kTapCallbackIDSystemStateChanged){
-            if(_callbackInstance!= null){
-                UnRegisterCallback(_callbackInstance, false);
-            }
-            _callbackInstance = callback; // 防止被 GC 回收
-        }else {
-            if(_userCallbackInstance!= null){
-                UnRegisterCallback(_userCallbackInstance, true);
-            }
-            _userCallbackInstance = callback;
+        switch (eventID)
+        {
+            case TapEventID.AuthorizeFinished:
+                if (_userCallbackInstance != null)
+                {
+                    UnRegisterCallback(eventID, _userCallbackInstance);
+                }
+                _userCallbackInstance = callback;
+                break;
+            case TapEventID.SystemStateChanged:
+                if (_callbackInstance != null)
+                {
+                    UnRegisterCallback(eventID, _callbackInstance);
+                }
+                _callbackInstance = callback; // 防止被 GC 回收 
+                break;
         }
-        TapLogger.Debug("start set delegate ptr " + funcPtr);
-        TapSDK_RegisterCallback(callbackId, funcPtr);
-        TapLogger.Debug("start set delegate ptr finish");
+        
+        TapSDK_RegisterCallback((int)eventID, funcPtr);
     }
 
     // 移除回调
-    internal static void UnRegisterCallback(CallbackDelegate callback, bool isUser)
+    internal static void UnRegisterCallback(TapEventID eventID,CallbackDelegate callback)
     {
         
         IntPtr funcPtr = Marshal.GetFunctionPointerForDelegate(callback);
-        if (isUser){
-            _userCallbackInstance = null;
-        }else {
-            _callbackInstance = null;
+        switch (eventID)
+        {
+            case TapEventID.AuthorizeFinished:
+                _userCallbackInstance = null;
+                break;
+            case TapEventID.SystemStateChanged:
+                _callbackInstance = null;
+                break; 
         }
-         TapLogger.Debug("start remove delegate ptr " + funcPtr);
-        TapSDK_UnregisterCallback(isUser? (int)TapCallbackID.kTapCallbackIDAuthorizeFinished :(int)TapCallbackID.kTapCallbackIDSystemStateChanged,funcPtr);
+        TapLogger.Debug("start remove delegate ptr " + funcPtr);
+        TapSDK_UnregisterCallback((int) eventID, funcPtr);
     }
    
     internal static AuthorizeResult LoginWithScopes(string[] scopeStrings, string responseType, string redirectUri, 
@@ -198,7 +206,7 @@ namespace TapSDK.Core.Standalone.Internal
             return (AuthorizeResult)result;
         }catch(Exception ex){
             TapLogger.Debug("login crash = " + ex.StackTrace);
-            return AuthorizeResult.kAuthorizeResult_UNKNOWN;
+            return AuthorizeResult.UNKNOWN;
         }
     }
 

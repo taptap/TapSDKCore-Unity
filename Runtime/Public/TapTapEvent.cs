@@ -18,7 +18,13 @@ namespace TapSDK.Core {
             }
         }
 
-        public static void SetUserID(string userID){
+        internal static void Init(TapTapEventOptions eventOptions)
+        {
+            platformWrapper.Init(eventOptions);
+        }
+
+        public static void SetUserID(string userID)
+        {
             platformWrapper?.SetUserID(userID);
         }
         

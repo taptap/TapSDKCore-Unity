@@ -4,6 +4,8 @@ using TapSDK.Core.Standalone.Internal;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using TapSDK.Core.Internal.Utils;
+using TapSDK.Core.Internal.Log;
 
 namespace TapSDK.Core.Standalone
 {
@@ -12,8 +14,21 @@ namespace TapSDK.Core.Standalone
     /// </summary>
     public class TapEventStandalone : ITapEventPlatform
     {
-        private readonly Tracker Tracker = TapCoreStandalone.Tracker;
+        internal static Tracker Tracker;
         private readonly User User = TapCoreStandalone.User;
+
+        private TapTapEventOptions eventOptions;
+
+        public void Init(TapTapEventOptions eventOptions)
+        {
+            this.eventOptions = eventOptions;
+            if (eventOptions == null || !eventOptions.enableTapTapEvent)
+            {
+                return;
+            }
+            Tracker = new Tracker();
+            Tracker.Init();
+        }
 
         /// <summary>
         /// Sets the user ID for tracking events.
@@ -21,7 +36,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="userID">The user ID to set.</param>
         public void SetUserID(string userID)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -35,7 +50,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the user.</param>
         public void SetUserID(string userID, string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -54,7 +69,7 @@ namespace TapSDK.Core.Standalone
         /// </summary>
         public void ClearUser()
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -67,7 +82,7 @@ namespace TapSDK.Core.Standalone
         /// <returns>The device ID.</returns>
         public string GetDeviceId()
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return "";
             }
@@ -81,7 +96,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the event.</param>
         public void LogEvent(string name, string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -101,7 +116,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the device initialization.</param>
         public void DeviceInitialize(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -115,7 +130,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the device update.</param>
         public void DeviceUpdate(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -129,7 +144,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the device addition.</param>
         public void DeviceAdd(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -143,7 +158,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the user initialization.</param>
         public void UserInitialize(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -157,7 +172,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the user update.</param>
         public void UserUpdate(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -171,7 +186,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the user addition.</param>
         public void UserAdd(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -186,7 +201,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="value">The value of the common property.</param>
         public void AddCommonProperty(string key, string value)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -209,7 +224,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">The JSON string containing the common properties.</param>
         public void AddCommon(string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -223,7 +238,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="key">The key of the common property to clear.</param>
         public void ClearCommonProperty(string key)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -236,7 +251,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="keys">The keys of the common properties to clear.</param>
         public void ClearCommonProperties(string[] keys)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -248,7 +263,7 @@ namespace TapSDK.Core.Standalone
         /// </summary>
         public void ClearAllCommonProperties()
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -266,7 +281,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="properties">Additional properties to associate with the charge event.</param>
         public void LogChargeEvent(string orderID, string productName, long amount, string currencyType, string paymentMethod, string properties)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -284,7 +299,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="callback">The callback function that returns a JSON string containing the dynamic properties.</param>
         public void RegisterDynamicProperties(Func<string> callback)
         {
-            if (!TapCoreStandalone.CheckInitState())
+            if (!CheckInitAndEnableState())
             {
                 return;
             }
@@ -298,11 +313,7 @@ namespace TapSDK.Core.Standalone
         /// <param name="value">oaid</param>
         public void SetOAID(string value)
         {
-            if (!TapCoreStandalone.CheckInitState())
-            {
-                return;
-            }
-            
+            Debug.Log("SetOAID called in PC platform (empty implementation)");
         }
 
         /// <summary>
@@ -310,12 +321,6 @@ namespace TapSDK.Core.Standalone
         /// </summary>
         public void LogDeviceLoginEvent()
         {
-            // PC端空实现
-            if (!TapCoreStandalone.CheckInitState())
-            {
-                return;
-            }
-            
             Debug.Log("LogDeviceLoginEvent called in PC platform (empty implementation)");
         }
 
@@ -363,10 +368,36 @@ namespace TapSDK.Core.Standalone
             return regex.IsMatch(userID);
         }
 
+        /// <summary>
+        /// 检查是否 Core模块初始化及 TapEvent 启用
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckInitAndEnableState()
+        {
+            if (!TapCoreStandalone.CheckInitState())
+            {
+                return false;
+            }
+            else
+            {
+                if (eventOptions == null || !eventOptions.enableTapTapEvent)
+                {
+                    string tip = "当前应用已关闭 TapTapEvent 开关，请开启后再调用相关接口";
+                    TapLog.Error(tip + " 开启方式：enableTapTapEvent = true");
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         private Dictionary<string, object> filterProperties(Dictionary<string, object> properties)
         {
             Dictionary<string, object> filteredProperties = new Dictionary<string, object>();
-            if(properties != null) {
+            if (properties != null)
+            {
                 foreach (var property in properties)
                 {
                     if (property.Key.Length <= 0 || property.Key.Length > 256)

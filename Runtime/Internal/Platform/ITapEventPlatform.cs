@@ -2,6 +2,9 @@
 
 namespace TapSDK.Core.Internal {
     public interface ITapEventPlatform {
+        
+        void Init(TapTapEventOptions eventOptions);
+
         void SetUserID(string userID);
         
         void SetUserID(string userID, string properties);

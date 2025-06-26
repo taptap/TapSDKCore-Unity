@@ -1,5 +1,6 @@
 using UnityEngine;
 using Newtonsoft.Json;
+using System;
 
 namespace TapSDK.Core
 {
@@ -59,6 +60,7 @@ namespace TapSDK.Core
         /// <summary>
         /// 渠道，如 AppStore、GooglePlay
         /// </summary>
+        [Obsolete("该属性已废弃，请在 TapTapEventOptions 设置对应属性")]
         public string channel = null;
         /// <summary>
         /// 游戏版本号，如果不传则默认读取应用的版本号
@@ -67,6 +69,7 @@ namespace TapSDK.Core
         /// <summary>
         /// 初始化时传入的自定义参数，会在初始化时上报到 device_login 事件
         /// </summary>
+        [Obsolete("该属性已废弃，请在 TapTapEventOptions 设置对应属性")] 
         public string propertiesJson = null;
         /// <summary>
         /// CAID，仅国内 iOS
@@ -75,6 +78,7 @@ namespace TapSDK.Core
         /// <summary>
         /// 是否能够覆盖内置参数，默认为 false
         /// </summary>
+        [Obsolete("该属性已废弃，请在 TapTapEventOptions 设置对应属性")] 
         public bool overrideBuiltInParameters = false;
         /// <summary>
         /// 是否开启广告商 ID 收集，默认为 false
@@ -83,6 +87,7 @@ namespace TapSDK.Core
         /// <summary>
         /// 是否开启自动上报 IAP 事件
         /// </summary>
+        [Obsolete("该属性已废弃，请在 TapTapEventOptions 设置对应属性")]
         public bool enableAutoIAPEvent = true;
         /// <summary>
         /// OAID证书, 仅 Android，用于上报 OAID 仅 [TapTapRegion.CN] 生效
@@ -101,15 +106,58 @@ namespace TapSDK.Core
         /// <summary>
         /// 是否即用禁用自动上报设备登录事件
         /// </summary>
+        [Obsolete("该属性已废弃，请在 TapTapEventOptions 设置对应属性")]
         public bool disableAutoLogDeviceLogin = false;
 
         /// <summary>
         /// 屏幕方向：0-竖屏 1-横屏
         /// </summary>
         public int screenOrientation = 0;
-  
+
         [JsonProperty("moduleName")]
         private string _moduleName = "TapTapSDKCore";
+        [JsonIgnore]
+        public string moduleName
+        {
+            get => _moduleName;
+        }
+    }
+
+    public class TapTapEventOptions : TapTapSdkBaseOptions
+    {
+
+        /// <summary>
+        /// 是否启用 TapTap Event 
+        /// </summary>
+        public bool enableTapTapEvent = true;
+
+        /// <summary>
+        /// 渠道，如 AppStore、GooglePlay
+        /// </summary>
+        public string channel = null;
+
+        /// <summary>
+        /// 初始化时传入的自定义参数，会在初始化时上报到 device_login 事件
+        /// </summary>
+        public string propertiesJson = null;
+
+         /// <summary>
+        /// 是否能够覆盖内置参数，默认为 false
+        /// </summary>
+        public bool overrideBuiltInParameters = false;
+
+        /// <summary>
+        /// 是否开启自动上报 IAP 事件
+        /// </summary>
+        public bool enableAutoIAPEvent = true;
+
+        /// <summary>
+        /// 是否即用禁用自动上报设备登录事件
+        /// </summary>
+        public bool disableAutoLogDeviceLogin = false;
+
+        [JsonProperty("moduleName")]
+        private string _moduleName = "TapTapEvent";
         [JsonIgnore]
         public string moduleName
         {

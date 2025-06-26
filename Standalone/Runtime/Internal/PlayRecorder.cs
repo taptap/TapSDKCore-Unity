@@ -46,7 +46,7 @@ namespace TapSDK.Core.Standalone.Internal {
                 Dictionary<string, object> props = new Dictionary<string, object> {
                     { "duration", duration }
                 };
-                TapCoreStandalone.Tracker.TrackEvent("play_game", props, true);
+                TapEventStandalone.Tracker?.TrackEvent("play_game", props, true);
             }
         }
     }

@@ -16,11 +16,11 @@ namespace TapSDK.Core.Standalone.Internal {
 
         private readonly PlayRecorder playRecorder;
 
-        public User() {
+        internal User() {
             playRecorder = new PlayRecorder();
         }
 
-        public void Login(string userId, Dictionary<string, object> props = null) {
+        internal void Login(string userId, Dictionary<string, object> props = null) {
             // 先执行旧用户登出逻辑
             Id = TapCoreStandalone.Prefs.Get<string>(USER_ID_KEY);
             if (!string.IsNullOrWhiteSpace(Id)) {
@@ -31,18 +31,18 @@ namespace TapSDK.Core.Standalone.Internal {
             Id = userId;
 
             if (TapCoreStandalone.enableAutoEvent) {
-                TapCoreStandalone.Tracker.TrackEvent(Constants.USER_LOGIN, props, true);
+                TapEventStandalone.Tracker?.TrackEvent(Constants.USER_LOGIN, props, true);
             }
 
             Dictionary<string, object> updateProps = new Dictionary<string, object> {
                 { "has_user", true },
             };
-            TapCoreStandalone.Tracker.TrackDeviceProperties(Constants.PROPERTY_UPDATE_TYPE, updateProps);
+            TapEventStandalone.Tracker?.TrackDeviceProperties(Constants.PROPERTY_UPDATE_TYPE, updateProps);
 
             playRecorder.Start();
         }
 
-        public void Logout() {
+        internal void Logout() {
             playRecorder.Stop();
 
             Id = null;

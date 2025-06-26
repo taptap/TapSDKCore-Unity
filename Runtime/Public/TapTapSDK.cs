@@ -12,11 +12,12 @@ using System.ComponentModel;
 
 namespace TapSDK.Core {
     public class TapTapSDK {
-        public static readonly string Version = "4.6.2";
+        public static readonly string Version = "4.6.3";
         
         public static string SDKPlatform = "TapSDK-Unity";
 
         public static TapTapSdkOptions taptapSdkOptions;
+
         private static ITapCorePlatform platformWrapper;
 
         private static bool disableDurationStatistics;
@@ -33,60 +34,99 @@ namespace TapSDK.Core {
                 "TapSDK.Core") as ITapCorePlatform;
         }
 
-        public static void Init(TapTapSdkOptions coreOption) {
+        public static void Init(TapTapSdkOptions coreOption)
+        {
             if (coreOption == null)
                 throw new ArgumentException("[TapSDK] options is null!");
             TapTapSDK.taptapSdkOptions = coreOption;
             TapLog.Enabled = coreOption.enableLog;
             platformWrapper?.Init(coreOption);
-             // 初始化各个模块
-            
+            // 初始化各个模块
+
             Type[] initTaskTypes = GetInitTypeList();
-            if (initTaskTypes != null) {
+            if (initTaskTypes != null)
+            {
                 List<IInitTask> initTasks = new List<IInitTask>();
-                foreach (Type initTaskType in initTaskTypes) {
+                foreach (Type initTaskType in initTaskTypes)
+                {
                     initTasks.Add(Activator.CreateInstance(initTaskType) as IInitTask);
                 }
                 initTasks = initTasks.OrderBy(task => task.Order).ToList();
-                foreach (IInitTask task in initTasks) {
+                foreach (IInitTask task in initTasks)
+                {
                     TapLogger.Debug($"Init: {task.GetType().Name}");
                     task.Init(coreOption);
                 }
             }
+            TapTapEvent.Init(HandleEventOptions(coreOption));
+            
         }
 
-        public static void Init(TapTapSdkOptions coreOption, TapTapSdkBaseOptions[] otherOptions){
+        public static void Init(TapTapSdkOptions coreOption, TapTapSdkBaseOptions[] otherOptions)
+        {
             if (coreOption == null)
                 throw new ArgumentException("[TapSDK] options is null!");
-            long startTime = DateTime.Now.Ticks;
+
             TapTapSDK.taptapSdkOptions = coreOption;
             TapLog.Enabled = coreOption.enableLog;
-            long startCore = DateTime.Now.Ticks;
-            platformWrapper?.Init(coreOption,otherOptions);
-            long costCore = DateTime.Now.Ticks - startCore;
-            // TapLog.Log($"Init core cost time: {costCore / 10000}ms");
+            platformWrapper?.Init(coreOption, otherOptions);
+
 
             Type[] initTaskTypes = GetInitTypeList();
-            if (initTaskTypes != null) {
+            if (initTaskTypes != null)
+            {
                 List<IInitTask> initTasks = new List<IInitTask>();
-                foreach (Type initTaskType in initTaskTypes) {
+                foreach (Type initTaskType in initTaskTypes)
+                {
                     initTasks.Add(Activator.CreateInstance(initTaskType) as IInitTask);
                 }
                 initTasks = initTasks.OrderBy(task => task.Order).ToList();
-                foreach (IInitTask task in initTasks) {
+                foreach (IInitTask task in initTasks)
+                {
                     TapLog.Log($"Init: {task.GetType().Name}");
-                    long startModule = DateTime.Now.Ticks;
-                    task.Init(coreOption,otherOptions);
-                    long costModule = DateTime.Now.Ticks - startModule;
-                    // TapLog.Log($"Init {task.GetType().Name} cost time: {costModule / 10000}ms");
+                    task.Init(coreOption, otherOptions);
                 }
             }
-            long costTime = DateTime.Now.Ticks - startTime;
-            // TapLog.Log($"Init cost time: {costTime / 10000}ms");
+            TapTapEvent.Init(HandleEventOptions(coreOption, otherOptions));
+        }
+
+        /// <summary>
+        /// 通过初始化属性设置 TapEvent 属性，兼容旧版本
+        /// </summary>
+        /// <param name="coreOption"></param>
+        /// <param name="otherOptions"></param>
+        /// <returns>TapEvent 属性</returns>
+        private static TapTapEventOptions HandleEventOptions(TapTapSdkOptions coreOption, TapTapSdkBaseOptions[] otherOptions = null)
+        {
+            TapTapEventOptions tapEventOptions = null;
+            if (otherOptions != null && otherOptions.Length > 0)
+            {
+                foreach (TapTapSdkBaseOptions otherOption in otherOptions)
+                {
+                    if (otherOption is TapTapEventOptions option)
+                    {
+                        tapEventOptions = option;
+                    }
+                }
+            }
+            if (tapEventOptions == null)
+            {
+                tapEventOptions = new TapTapEventOptions();
+                if (coreOption != null)
+                {
+                    tapEventOptions.channel = coreOption.channel;
+                    tapEventOptions.disableAutoLogDeviceLogin = coreOption.disableAutoLogDeviceLogin;
+                    tapEventOptions.enableAutoIAPEvent = coreOption.enableAutoIAPEvent;
+                    tapEventOptions.overrideBuiltInParameters = coreOption.overrideBuiltInParameters;
+                    tapEventOptions.propertiesJson = coreOption.propertiesJson;
+                }
+            }
+            return tapEventOptions;
         }
 
         // UpdateLanguage 方法
-        public static void UpdateLanguage(TapTapLanguageType language){
+        public static void UpdateLanguage(TapTapLanguageType language)
+        {
             platformWrapper?.UpdateLanguage(language);
         }
         

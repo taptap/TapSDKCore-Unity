@@ -41,7 +41,7 @@ namespace TapSDK.Core.Internal.Utils
                 if (!Application.isPlaying)
                     return;
                 initialized = true;
-                var g = new GameObject("Loom");
+                var g = new GameObject("TapLoom");
                 DontDestroyOnLoad(g);
                 _current = g.AddComponent<TapLoom>();
             }

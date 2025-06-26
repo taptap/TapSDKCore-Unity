@@ -3,9 +3,7 @@ using UnityEngine;
 
 namespace TapSDK.Core.Standalone.Internal
 {
-    /// <summary>
-    /// 防沉迷轮询器
-    /// </summary>
+    
     internal class TapClientBridgePoll : MonoBehaviour 
     {
         static readonly string TAP_CLIENT_POLL_NAME = "TapClientBridgePoll";
