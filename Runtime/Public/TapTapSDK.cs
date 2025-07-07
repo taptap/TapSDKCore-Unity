@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace TapSDK.Core {
     public class TapTapSDK {
-        public static readonly string Version = "4.6.3";
+        public static readonly string Version = "4.7.0-alpha.14";
         
         public static string SDKPlatform = "TapSDK-Unity";
 
@@ -59,7 +59,7 @@ namespace TapSDK.Core {
                 }
             }
             TapTapEvent.Init(HandleEventOptions(coreOption));
-            
+
         }
 
         public static void Init(TapTapSdkOptions coreOption, TapTapSdkBaseOptions[] otherOptions)

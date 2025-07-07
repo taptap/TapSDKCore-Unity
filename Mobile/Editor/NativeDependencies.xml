@@ -3,13 +3,14 @@
   <androidPackages>
     <repositories>
       <repository>https://repo.maven.apache.org/maven2</repository>
+      <repository>https://nexus.xmxdev.com/repository/maven-public</repository>
     </repositories>
-    <androidPackage spec="com.taptap.sdk:tap-core-unity:4.6.3"/>
+    <androidPackage spec="com.taptap.sdk:tap-core-unity:4.7.0-alpha.14"/>
   </androidPackages>
   <iosPods>
     <sources>
       <source>https://github.com/CocoaPods/Specs.git</source>
     </sources>
-    <iosPod name="TapTapCoreSDK" version="~> 4.6.3" bitcodeEnabled="false" addToAllTargets="false"/>
+    <iosPod name="TapTapCoreSDK" version="~> 4.5.5" bitcodeEnabled="false" addToAllTargets="false"/>
   </iosPods>
 </dependencies>
