@@ -29,16 +29,16 @@ namespace TapSDK.Core.Standalone.Internal {
             okButton.onClick.AddListener(OnOKButtonClicked);
         }
 
-        internal void Show(TapSDKInitResult errorType)
+        internal void Show(int errorType)
         {
-            if (errorType == TapSDKInitResult.NoPlatform){
+            if (errorType == (int)TapSDKInitResult.NoPlatform){
                 tipText.text = "获取游戏信息失败，请下载 TapTap 客户端后重新启动游戏";
-            }else if (errorType == TapSDKInitResult.NotLaunchedByPlatform){
+            }else if (errorType == (int)TapSDKInitResult.NotLaunchedByPlatform){
                 tipText.text = "获取游戏信息失败，请从 TapTap 客户端重新启动游戏";
-            }else if (errorType == TapSDKInitResult.Unknown){
+            }else if (errorType == (int)TapSDKInitResult.Unknown){
                 tipText.text = "本地发生未知错误，请从 TapTap 客户端重新启动游戏";
-            }else if (errorType == TapSDKInitResult.Timeout){
-                tipText.text = "获取游戏信息超时，请从 TapTap 客户端重新启动游戏";                  
+            }else if (errorType == (int)TapSDKInitResult.PlatformVersionMismatch){
+                tipText.text = "客户端版本不匹配，请将 TapTap 客户端升级到最新版本";                  
             }else {
                 tipText.text = "发生未知错误，请从 TapTap 客户端重新启动游戏";
             }

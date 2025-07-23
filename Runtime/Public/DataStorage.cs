@@ -16,7 +16,8 @@ namespace TapSDK.Core
         {
             string storageKey = GenerateStorageKey(key);
             SaveStringToCache(storageKey, value);
-            PlayerPrefs.SetString(storageKey, EncodeString(value));
+            string encodeValue = EncodeString(value);
+            PlayerPrefs.SetString(storageKey, encodeValue);
         }
 
         public static string LoadString(string key)
@@ -29,10 +30,12 @@ namespace TapSDK.Core
             }
             value = PlayerPrefs.HasKey(storageKey) ? DecodeString(PlayerPrefs.GetString(storageKey)) : null;
             // 尝试从本地获取旧版本数据
-            if (value == null){
+            if (value == null)
+            {
                 value = PlayerPrefs.HasKey(key) ? DecodeString(PlayerPrefs.GetString(key)) : null;
                 // 旧版本存在有效数据时，转储为新的 storageKey
-                if (value != null) {
+                if (value != null)
+                {
                     PlayerPrefs.SetString(storageKey, EncodeString(value));
                     PlayerPrefs.DeleteKey(key);
                 }
@@ -42,6 +45,15 @@ namespace TapSDK.Core
                 SaveStringToCache(storageKey, value);
             }
             return value;
+        }
+
+        public static void RemoveCacheKey(string key)
+        {
+            if (!string.IsNullOrEmpty(key))
+            {
+                PlayerPrefs.DeleteKey(key);
+                PlayerPrefs.DeleteKey(GenerateStorageKey(key));
+            }
         }
 
         private static void SaveStringToCache(string key, string value)
