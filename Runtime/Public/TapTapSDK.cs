@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace TapSDK.Core {
     public class TapTapSDK {
-        public static readonly string Version = "4.7.1";
+        public static readonly string Version = "4.8.1-beta.1";
         
         public static string SDKPlatform = "TapSDK-Unity";
 
@@ -54,7 +54,7 @@ namespace TapSDK.Core {
                 initTasks = initTasks.OrderBy(task => task.Order).ToList();
                 foreach (IInitTask task in initTasks)
                 {
-                    TapLogger.Debug($"Init: {task.GetType().Name}");
+                    TapLog.Log($"Init: {task.GetType().Name}");
                     task.Init(coreOption);
                 }
             }
